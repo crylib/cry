@@ -28,6 +28,7 @@ docs:
         - test
     script:
         - make doc
+        - rm -rf /docs/*
         - mv doc/doxy/html/* /docs/
     only:
         - tags
