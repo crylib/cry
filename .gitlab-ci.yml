@@ -29,3 +29,5 @@ docs:
     script:
         - make doc
         - mv doc/doxy/html/* /docs/
+    only:
+        - tags
