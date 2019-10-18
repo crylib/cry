@@ -1,10 +1,9 @@
-image: davxy/sonar-builder
+image: davxy/linux-builder
 
 stages:
     - build
     - test
-    - sonar
-    - pages
+    - deploy
 
 # Build
 build:
@@ -22,26 +21,11 @@ test:
         - (cd test; valgrind --leak-check=full --error-exitcode=2 ./test)
         - gcovr --exclude test -r . | grep TOTAL
 
-# Sonar
-sonar:
-    stage: sonar
-    dependencies:
-        - test
-    only:
-        - tsc
-    script:
-        - make sonar CONFIG=config/config-ci.mk
-
 # Publish API Documentation
-pages:
+docs:
     stage: deploy
     dependencies:
         - test
     script:
         - make doc
-        - mv doc/doxy/html/ public/
-    artifacts:
-        paths:
-            - public
-    only:
-        - tags
+        - mv doc/doxy/html/* /docs/
