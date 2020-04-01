@@ -11,6 +11,8 @@
 /** Nop to prevent some warnings */
 #define NOP do {} while (0)
 
+#define CRY_UNUSED(v) (void)(v)
+
 /** Statically get array number of elements */
 #define CRY_ARRAY_LEN(ar) (sizeof(ar)/sizeof((ar)[0]))
 
@@ -134,15 +136,21 @@
     (v1) ^= (v2); \
     (v2) ^= (v1); \
     (v1) ^= (v2); \
-    } while (0)
+} while (0)
 
 /** Rotate the bits left */
-#define CRY_ROTL(val, size, bits) \
-    ((((val))<<(bits)) | (((val))>>(size-(bits))))
+#define CRY_ROTL(val, bits, size) \
+    ((val) << bits | ((val) >> ((size) - (bits))))
 
-/** Rotate the bits of a unsigned 32 right. */
-#define CRY_ROTL32(val, bits) \
-    CRY_ROTL(val, 32, bits)
+/** Rotate the bits right */
+#define CRY_ROTR(val, bits, size) \
+    ((val) >> bits | ((val) << ((size) - (bits))))
+
+#define CRY_ROTL32(val, bits) CRY_ROTL(val, bits, 32)
+#define CRY_ROTR32(val, bits) CRY_ROTR(val, bits, 32)
+#define CRY_ROTL64(val, bits) CRY_ROTL(val, bits, 64)
+#define CRY_ROTR64(val, bits) CRY_ROTR(val, bits, 64)
+
 
 /**
  * Modular inverse using Euclid algorithm.

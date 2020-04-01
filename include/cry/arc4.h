@@ -6,7 +6,7 @@
  * @warning Multiple vulnerabilities have been discovered in ARC4, rendering
  *          it insecure. It is especially vulnerable when the beginning of
  *          the output keystream is not discarded, or when nonrandom or
- *          related keys are used. 
+ *          related keys are used.
  */
 
 #ifndef CRY_ARC4_H_

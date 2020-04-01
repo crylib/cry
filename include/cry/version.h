@@ -11,7 +11,7 @@
 /** Library version minor number */
 #define CRY_MINOR   1
 /** Library version patch number */
-#define CRY_PATCH   0
+#define CRY_PATCH   1
 /** Library version number */
 #define CRY_VERSION (((CRY_MAJOR << 8) | (CRY_MINOR << 8)) | CRY_PATCH)
 

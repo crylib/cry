@@ -22,17 +22,21 @@ Given a version number MAJOR.MINOR.PATCH
 * PATCH incremented for bug fixes
 
 
-[0.1.1] - Unreleased
+[0.1.1] - 2020-04-01
 --------------------
 
 Added
 
-* ARC4 stream cipher
-* Elgamal digital signature
+* ARC4 stream cipher.
+* Elgamal digital signature.
+* Elliptic curve group arithmetics exhaustive unit tests (add/mul).
+* DSA key parameters generator.
+* SHA-512 and SHA-384
 
 Fixed
 
-* MPI "is_prime" function was not working for primes < 1010 (decimal)
+* MPI "is_prime" function was not working for primes < 1010 (decimal).
+* ECDSA major fix in one of the NIST curves parameters.
 
 
 [0.1.0] - 2019-09-23
@@ -40,19 +44,19 @@ Fixed
 
 Added
 
-* RSA sign/verify functions
-* Schoolbook RSA
-* AES Key Wrap (RFC-3394)
+* RSA sign/verify functions.
+* Schoolbook RSA.
+* AES Key Wrap (RFC-3394).
 
 Changed
 
-* RSA padding schemes correction
-* MPI random prime generation sequence independence from MPI digit size
-* Weak PRNG properly renamed to LFSR-113
+* RSA padding schemes correction.
+* MPI random prime generation sequence independence from MPI digit size.
+* Weak PRNG renamed to LFSR-113.
 
 Fixed
 
-* MPI bit-set macro was setting the wrong bit when using 64-bit digits
+* MPI bit-set macro was setting the wrong bit when using 64-bit digits.
 
 
 [0.0.10] - 2019-06-08

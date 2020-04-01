@@ -37,10 +37,10 @@ int cry_elgamal_init(cry_elgamal_ctx *ctx);
 void cry_elgamal_clear(cry_elgamal_ctx *ctx);
 
 int cry_elgamal_sign(cry_elgamal_ctx *ctx, unsigned char *sign,
-                      const unsigned char *in, size_t len);
+                     const unsigned char *in, size_t len);
 
 int cry_elgamal_verify(cry_elgamal_ctx *ctx, const unsigned char *sign,
-                        const unsigned char *in, size_t len);
+                       const unsigned char *in, size_t len);
 
 int cry_elgamal_sign2(cry_elgamal_ctx *ctx, cry_elgamal_sig *sign,
                       const unsigned char *in, size_t len);

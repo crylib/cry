@@ -8,6 +8,27 @@
 
 /*
  * Generate a random secret k, such that gcd(k, p-1) = 1
+ * (should be invertible modulo p-1).
+ *
+ * Is extremely important to don't reuse the same ephemeral key k.
+ *
+ * If the ephemeral key K is reused then Elgamal signature is subject
+ * to a trivial attack:
+ *
+ * If two signatures (r1,s1) and (r2,s2) are generated using the same
+ * ephemeral key k, then r = r1 = r2.
+ * (An attacker can easily detect the situation)
+ *
+ * The private key d can be easily found:
+ *
+ * s1 = (M1 - d*r) * k^-1 (mod p-1)
+ * s2 = (M2 - d*r) * k^-1 (mod p-1)
+ * s1 - s2 = (M1 - M2) * k^-1 (mod p-1)
+ * k = (M1 - M2) / (s1 - s2) (mod p-1)
+ * d = (M1 - k*s1) / r (mod p-1)
+ *
+ * Note: if gcd(s1-s2, p-1) <> 1 then there are multiple solutions and the
+ * attacker needs to check for the correct one (not a big issue for him).
  */
 static int secret_gen(cry_mpi *k, const cry_mpi *t, const cry_mpi *one)
 {
@@ -33,7 +54,7 @@ e:  cry_mpi_clear(&r);
 }
 
 int cry_elgamal_sign2(cry_elgamal_ctx *ctx, cry_elgamal_sig *sign,
-                     const unsigned char *in, size_t len)
+                      const unsigned char *in, size_t len)
 {
     int res;
     cry_mpi one, k, z, t;
@@ -73,7 +94,7 @@ e:  cry_mpi_clear_list(&k, &z, &t, (cry_mpi *)NULL);
 }
 
 int cry_elgamal_verify2(cry_elgamal_ctx *ctx, const cry_elgamal_sig *sign,
-                       const unsigned char *in, size_t len)
+                        const unsigned char *in, size_t len)
 {
     int res;
     cry_mpi r, z;
@@ -101,7 +122,7 @@ e:  cry_mpi_clear_list(&r, &z, (cry_mpi *)NULL);
 }
 
 int cry_elgamal_sign(cry_elgamal_ctx *ctx, unsigned char *sign,
-                      const unsigned char *in, size_t len)
+                     const unsigned char *in, size_t len)
 {
     int res;
     cry_elgamal_sig s;
@@ -121,7 +142,7 @@ int cry_elgamal_sign(cry_elgamal_ctx *ctx, unsigned char *sign,
 }
 
 int cry_elgamal_verify(cry_elgamal_ctx *ctx, const unsigned char *sign,
-                        const unsigned char *in, size_t len)
+                       const unsigned char *in, size_t len)
 {
     int res;
     cry_elgamal_sig s;
@@ -151,4 +172,3 @@ void cry_elgamal_clear(cry_elgamal_ctx *ctx)
     cry_mpi_clear_list(&ctx->p, &ctx->d, &ctx->g, &ctx->y, (cry_mpi *)NULL);
     cry_memset(ctx, 0, sizeof(*ctx));
 }
-

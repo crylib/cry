@@ -205,7 +205,7 @@ int cry_mpi_is_prime(const cry_mpi *p)
         }
         break;
     case 2:
-         /* Part of the small primes list */
+        /* Part of the small primes list */
         res = 1;
         break;
     case 1:

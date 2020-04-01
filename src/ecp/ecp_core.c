@@ -42,21 +42,21 @@ int cry_ecp_copy(cry_ecp *d, const cry_ecp *s)
 }
 
 
-int cry_ecp_grp_init(cry_ecp_grp *ec)
+int cry_ecp_grp_init(cry_ecp_grp *grp)
 {
     int res;
 
-    res = cry_mpi_init_list(&ec->p, &ec->a, &ec->b, &ec->n,
-                            &ec->g.x, &ec->g.y, &ec->g.z,
+    res = cry_mpi_init_list(&grp->p, &grp->a, &grp->b, &grp->n,
+                            &grp->g.x, &grp->g.y, &grp->g.z,
                             (cry_mpi *)NULL);
     if (res == 0)
-        cry_ecp_set_zero(&ec->g);
+        cry_ecp_set_zero(&grp->g);
     return res;
 }
 
-void cry_ecp_grp_clear(cry_ecp_grp *ec)
+void cry_ecp_grp_clear(cry_ecp_grp *grp)
 {
-    cry_mpi_clear_list(&ec->p, &ec->a, &ec->b, &ec->n,
-                       &ec->g.x, &ec->g.y, &ec->g.z,
+    cry_mpi_clear_list(&grp->p, &grp->a, &grp->b, &grp->n,
+                       &grp->g.x, &grp->g.y, &grp->g.z,
                        (cry_mpi *)NULL);
 }

@@ -1,6 +1,47 @@
 #include "test.h"
 #include <cry/dsa.h>
 
+static cry_dsa_ctx dsa;
+static cry_dsa_sig sig;
+
+static const unsigned char sha[] = {
+    0x97, 0x7f, 0x2b, 0x13, 0xa2, 0xc3, 0x46, 0x38,
+    0x23, 0x35, 0x95, 0x6e, 0xa6, 0xc7, 0x5a, 0xf1,
+    0xd0, 0x13, 0xad, 0xb4, 0x07, 0xa2, 0xa3, 0x30,
+    0x20, 0xa8, 0x5f, 0x18, 0x78, 0x9f, 0xa1, 0x43,
+};
+
+static void keygen(unsigned int l)
+{
+    ASSERT_OK(cry_dsa_keygen(&dsa, l));
+
+    ASSERT_OK(cry_dsa_sign(&dsa, &sig, sha, sizeof(sha)));
+    ASSERT_OK(cry_dsa_verify(&dsa, &sig, sha, sizeof(sha)));
+}
+
+static void keygen_512(void)
+{
+    keygen(0);
+}
+
+static void keygen_768(void)
+{
+#ifndef SKIP_SLOW
+    keygen(4);
+#else
+    TRACE2("      (skip)\n");
+#endif
+}
+
+static void keygen_1024(void)
+{
+#ifndef SKIP_SLOW
+    keygen(8);
+#else
+    TRACE2("      (skip)\n");
+#endif
+}
+
 static const unsigned char pvt[] = {
     0x53, 0x61, 0xae, 0x4f, 0x6f, 0x25, 0x98, 0xde,
     0xc4, 0xbf, 0x0b, 0xbe, 0x09, 0x5f, 0xdf, 0x90,
@@ -47,29 +88,38 @@ static const unsigned char G[] = {
     0x99, 0xd8, 0xa8, 0x19, 0x96, 0xf7, 0x7f, 0x99
 };
 
-static const unsigned char *msg = "abc123";
+static void sign_verify(void)
+{
+    ASSERT_OK(cry_mpi_load_bin(&dsa.g, G, sizeof(G)));
+    ASSERT_OK(cry_mpi_load_bin(&dsa.p, P, sizeof(P)));
+    ASSERT_OK(cry_mpi_load_bin(&dsa.q, Q, sizeof(Q)));
+    ASSERT_OK(cry_mpi_load_bin(&dsa.pvt, pvt, sizeof(pvt)));
+    ASSERT_OK(cry_mpi_load_bin(&dsa.pub, pub, sizeof(pub)));
+
+    ASSERT_OK(cry_dsa_sign(&dsa, &sig, sha, sizeof(sha)));
+    ASSERT_OK(cry_dsa_verify(&dsa, &sig, sha, sizeof(sha)));
+}
+
+static void setup(void)
+{
+    cry_dsa_init(&dsa);
+    cry_mpi_init_list(&sig.r, &sig.s, NULL);
+}
+
+static void teardown(void)
+{
+    cry_dsa_clear(&dsa);
+    cry_mpi_clear_list(&sig.r, &sig.s, NULL);
+}
+
+#define MYRUN(name, test) run(name, test, setup, teardown)
 
 void dsa_test(void)
 {
-    cry_dsa_ctx dsa;
-    cry_dsa_signature sign;
-
-    ASSERT_OK(cry_mpi_init_list(&sign.r, &sign.s, NULL));
-    ASSERT_OK(cry_mpi_init_bin(&dsa.g, G, sizeof(G)));
-    ASSERT_OK(cry_mpi_init_bin(&dsa.p, P, sizeof(P)));
-    ASSERT_OK(cry_mpi_init_bin(&dsa.q, Q, sizeof(Q)));
-    ASSERT_OK(cry_mpi_init_bin(&dsa.pvt, pvt, sizeof(pvt)));
-    ASSERT_OK(cry_mpi_init_bin(&dsa.pub, pub, sizeof(pub)));
-
-    ASSERT_OK(cry_dsa_sign(&dsa, &sign, msg, strlen(msg)));
-
-    TRACE("DSA signature of '%s' is:\n", msg);
-    PRINT_MPI("r", &sign.r, 16);
-    PRINT_MPI("s", &sign.s, 16);
-
-    ASSERT_OK(cry_dsa_verify(&dsa, &sign, msg, strlen(msg)));
-
-    cry_mpi_clear_list(&sign.r, &sign.s,
-                       &dsa.g, &dsa.p, &dsa.q,
-                       &dsa.pvt, &dsa.pub, NULL);
+    TRACE("* DSA\n");
+    MYRUN("Keygen 512", keygen_512);
+    MYRUN("Keygen 768", keygen_768);
+    MYRUN("Keygen 1024", keygen_1024);
+    MYRUN("Sign and verify", sign_verify);
+    TRACE("\n");
 }

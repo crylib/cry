@@ -35,21 +35,21 @@ static int padding_add(unsigned char *dst, size_t dlen,
     j = dlen - 3 - slen;
 
     switch (padding) {
-        case CRY_RSA_PADDING_PKCS_V15:
-            if (sign == 0) {
-                *(p++) = 2;     /* Block Type */
-                res = nozero_rand(p, j);
-            } else {
-                *(p++) = 1;     /* Block Type */
-                memset(p, 0xFF, j);
-            }
-            break;
-        case CRY_RSA_PADDING_PKCS_V21:
-            /* not implemented yet */
-            res = -1;
-            break;
-        default:
-            break;
+    case CRY_RSA_PADDING_PKCS_V15:
+        if (sign == 0) {
+            *(p++) = 2;         /* Block Type */
+            res = nozero_rand(p, j);
+        } else {
+            *(p++) = 1;         /* Block Type */
+            memset(p, 0xFF, j);
+        }
+        break;
+    case CRY_RSA_PADDING_PKCS_V21:
+        /* not implemented yet */
+        res = -1;
+        break;
+    default:
+        break;
     }
     if (res != 0)
         return res;
@@ -68,7 +68,7 @@ static int padding_del(unsigned char *dst, size_t dlen,
     (void)padding; /* unused */
 
     if (src[0] != 0 || (sign != 0 && src[1] != 0x01) ||
-            (sign == 0 && src[1] != 0x02))
+        (sign == 0 && src[1] != 0x02))
         /* Unrecognized block type */
         return -1;
 
@@ -109,7 +109,8 @@ static int encrypt_block(cry_rsa_ctx *ctx, unsigned char *out,
         goto e;
 
     if (ctx->padding != CRY_RSA_PADDING_NONE) {
-        if ((res = padding_add(buf, mod_len, in, inlen, ctx->padding, sign)) != 0)
+        if ((res =
+                 padding_add(buf, mod_len, in, inlen, ctx->padding, sign)) != 0)
             goto e1;
     } else {
         memcpy(buf, in, inlen);
@@ -175,6 +176,7 @@ static int encrypt(cry_rsa_ctx *ctx, unsigned char **out, size_t *outlen,
 {
     int res;
     size_t mod_siz, block_siz;
+    void *newptr;
 
     *out = NULL;
     *outlen = 0;
@@ -183,13 +185,14 @@ static int encrypt(cry_rsa_ctx *ctx, unsigned char **out, size_t *outlen,
 
     while (inlen) {
         if (inlen < block_siz)
-             block_siz = inlen;
+            block_siz = inlen;
 
-        *out = realloc(*out, *outlen + mod_siz);
-        if (*out == NULL) {
+        newptr = realloc(*out, *outlen + mod_siz);
+        if (newptr == NULL) {
             res = -1;
             break;
         }
+        *out = newptr;
 
         res = encrypt_block(ctx, *out + *outlen, in, block_siz, sign);
         if (res != 0)
@@ -215,6 +218,7 @@ static int decrypt(cry_rsa_ctx *ctx, unsigned char **out, size_t *outlen,
 {
     int res;
     size_t mod_siz;
+    void *newptr;
 
     *out = NULL;
     *outlen = 0;
@@ -227,7 +231,12 @@ static int decrypt(cry_rsa_ctx *ctx, unsigned char **out, size_t *outlen,
             break;
         }
 
-        *out = realloc(*out, *outlen + mod_siz);
+        newptr = realloc(*out, *outlen + mod_siz);
+        if (newptr == NULL) {
+            res = -1;
+            break;
+        }
+        *out = newptr;
 
         res = decrypt_block(ctx, *out, in, mod_siz, sign);
         if (res < 0)

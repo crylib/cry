@@ -5,13 +5,13 @@
 int cry_dh_init(cry_dh_ctx *ctx)
 {
     return cry_mpi_init_list(&ctx->p, &ctx->g, &ctx->e, &ctx->Y, &ctx->Z,
-                             (cry_mpi *) NULL);
+                             (cry_mpi *)NULL);
 }
 
 void cry_dh_clear(cry_dh_ctx *ctx)
 {
     cry_mpi_clear_list(&ctx->p, &ctx->g, &ctx->e, &ctx->Y, &ctx->Z,
-                       (cry_mpi *) NULL);
+                       (cry_mpi *)NULL);
     cry_memset(ctx, 0, sizeof(*ctx));
 }
 

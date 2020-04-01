@@ -119,10 +119,12 @@ int cry_mpi_get_int(cry_mpi *a, long *val)
 
 void cry_mpi_clear(cry_mpi *a)
 {
-    if (a->data != NULL)
-        free(a->data);
+    if (a->data != NULL) {
+        if (a->alloc != 0) /* do not free non malloced data */
+            free(a->data);
+        a->data = NULL;
+    }
     /* reset the members to make debugging easier */
-    a->data = NULL;
     a->alloc = 0;
     a->used = 0;
     a->sign = 0;

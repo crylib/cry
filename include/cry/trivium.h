@@ -87,7 +87,7 @@ void cry_trivium_iv_set(cry_trivium_ctx *ctx, const unsigned char *iv,
  *
  * @param ctx   Trivium context.
  * @param dst   Destination buffer.
- * @param src   Source buffer. 
+ * @param src   Source buffer.
  * @param size  Number of bytes.
  */
 void cry_trivium_crypt(cry_trivium_ctx *ctx, unsigned char *dst,

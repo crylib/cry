@@ -18,7 +18,7 @@ test:
         - build
     script:
         - make test CONFIG=config/config-ci.mk
-        - (cd test; valgrind --leak-check=full --error-exitcode=2 ./test)
+        - (cd test; valgrind --leak-check=full --error-exitcode=2 ./test -v)
         - gcovr --exclude test -r . | grep TOTAL
 
 # Publish API Documentation

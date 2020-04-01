@@ -18,8 +18,11 @@ void rsa_test(void);
 void md5_test(void);
 void sha1_test(void);
 void sha256_test(void);
+void sha512_test(void);
 void ecp_test(void);
 void elgamal_test(void);
+void dsa_test(void);
+void ecdsa_test(void);
 void utils_test(void);
 
 static int g_runs;
@@ -52,15 +55,17 @@ struct sub_test g_tests[] = {
     SUB_TEST(md5),
     SUB_TEST(sha1),
     SUB_TEST(sha256),
+    SUB_TEST(sha512),
     SUB_TEST(ecp),
     SUB_TEST(elgamal),
+    SUB_TEST(dsa),
+    SUB_TEST(ecdsa),
     SUB_TEST(utils),
 #if 0
     SUB_TEST(rand),
     SUB_TEST(dh),
     SUB_TEST(dsa),
     SUB_TEST(ecdh),
-    SUB_TEST(ecdsa),
 #endif
 };
 

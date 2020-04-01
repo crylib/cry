@@ -256,12 +256,15 @@ void rsa_test(void)
     TRACE("* RSA Keygen\n");
     MYRUN("Keygen 512 with 65537 exponent", keygen_known_exp);
     MYRUN("Keygen 512 with random exponent", keygen_rand_exp);
+
     TRACE("* RSA Encryption\n");
     MYRUN("Encrypt-Decrypt Schoolbook", encrypt_decrypt_sb);
     MYRUN("Encrypt-Decrypt PKCS v15", encrypt_decrypt);
+
     TRACE("* RSA Digital Signature\n");
     MYRUN("Sign-Verify Schoolbook", sign_verify_sb);
     MYRUN("Sign-Verify PKCS v15", sign_verify);
     func_test("rsa_test.data", dispatch);
+
     TRACE("\n");
 }

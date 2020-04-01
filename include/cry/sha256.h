@@ -1,6 +1,8 @@
 /**
  * @file    sha256.h
- * @brief   Secure Hash Algorithm (256)
+ *
+ * @brief   Secure Hash Algorithms 224 and 256 (SHA-224 and SHA-256)
+ *          defined by FIPS 180-4: Secure Hash Standard (SHS).
  */
 
 #ifndef CRY_SHA256_H_

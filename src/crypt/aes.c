@@ -517,4 +517,3 @@ void cry_aes_clear(cry_aes_ctx *ctx)
 {
     cry_memset(ctx, 0, sizeof(*ctx));
 }
-

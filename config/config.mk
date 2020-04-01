@@ -19,7 +19,7 @@ CRY_DEBUG=y
 ################################################################################
 
 #CRY_ARCH_X86_64=y
-#CRY_ARCH_x86=y
+#CRY_ARCH_X86=y
 
 ################################################################################
 # Algorithms tweaks
@@ -37,7 +37,7 @@ CRY_MPI_MUL_COMBA=y
 
 # Karatsuba multiplier enabled, see the mpi_mul.c to set the CUTOFF
 CRY_MPI_MUL_KARATSUBA=y
-#
+
 # Toom-3 multiplier enabled, see the mpi_mul.c to set the CUTOFF
 CRY_MPI_MUL_TOOM3=y
 

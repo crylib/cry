@@ -18,7 +18,7 @@ mycheck()
     sed -i 's|\/\*\([^[:space:]*]\)|\/\* \1|g' $file
 
     # Remove extra whitespaces before pointers
-    sed -i 's|\([a-zA-Z0-9]\)   *\(\*[^s]\)|\1 \2|g' $file
+    sed -i 's|\([a-zA-Z0-9]\)   *\(\*[\^s]\)|\1 \2|g' $file
 }
 
 
@@ -34,7 +34,7 @@ files=$(find $dirs -type f | grep -E ".(h|c)$")
 for file in $files
 do
     mycheck $file
-    uncrustify -c uncrustify.cfg --no-backup $file
+    uncrustify -c uncrustify.cfg --no-backup -f $file -o $file
     #clang-format -style=file -i -verbose
 done
 
