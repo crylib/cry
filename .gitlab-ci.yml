@@ -1,34 +1,10 @@
 image: davxy/linux-builder
 
 stages:
-    - build
-    - test
-    - deploy
+    - sonar
 
-# Build
-build:
-    stage: build
+# Publish to SonarQube
+sonar:
+    stage: sonar
     script:
-        - make
-
-# Test
-test:
-    stage: test
-    dependencies:
-        - build
-    script:
-        - make test CONFIG=config/config-ci.mk
-        - (cd test; valgrind --leak-check=full --error-exitcode=2 ./test -v)
-        - gcovr --exclude test -r . | grep TOTAL
-
-# Publish API Documentation
-docs:
-    stage: deploy
-    dependencies:
-        - test
-    script:
-        - make doc
-        - rm -rf /docs/*
-        - mv doc/doxy/html/* /docs/
-    only:
-        - tags
+        - make sonar CONFIG=config/config-ci.mk
