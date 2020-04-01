@@ -1,4 +1,4 @@
-image: davxy/linux-builder
+image: davxy/sonar-builder
 
 stages:
     - sonar
@@ -7,4 +7,4 @@ stages:
 sonar:
     stage: sonar
     script:
-        - make sonar CONFIG=config/config-ci.mk
+        - make sonar
