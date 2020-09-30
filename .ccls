@@ -1,0 +1,4 @@
+gcc
+%h
+-Isrc
+-Iinclude

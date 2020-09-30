@@ -3,9 +3,11 @@
 
 #include <cry/mpi.h>
 #include <cry/assert.h>
-#include <string.h> /* memset */
+#include <cry/config.h>
+#include <string.h>
 #include <stdint.h>
 #include "../misc.h"
+
 
 /* Double precision digits */
 
@@ -68,5 +70,54 @@ int cry_mpi_shld(cry_mpi *a, size_t n);
 #define cry_mpi_is_bit_set(n, bit) \
     (((n)->data[(bit) / CRY_MPI_DIGIT_BITS] & \
         ((cry_mpi_digit)1 << ((bit) % CRY_MPI_DIGIT_BITS))) != 0)
+
+
+#if defined(CRY_ARCH_X86)
+
+#define MULADD(c0, c1, c2, i, j) asm(               \
+     "movl  %6, %%eax    \n\t"                      \
+     "mull  %7           \n\t"                      \
+     "addl  %%eax, %0    \n\t"                      \
+     "adcl  %%edx, %1    \n\t"                      \
+     "adcl  $0, %2       \n\t"                      \
+     : "=r"(c0), "=r"(c1), "=r"(c2)                 \
+     : "0"(c0), "1"(c1), "2"(c2), "m"(i), "m"(j)    \
+     : "%eax", "%edx", "cc")
+
+#elif defined(CRY_ARCH_X86_64)
+
+#define MULADD(c0, c1, c2, i, j) asm(               \
+     "movq  %6, %%rax    \n\t"                      \
+     "mulq  %7           \n\t"                      \
+     "addq  %%rax, %0    \n\t"                      \
+     "adcq  %%rdx, %1    \n\t"                      \
+     "adcq  $0, %2       \n\t"                      \
+     : "=r"(c0), "=r"(c1), "=r"(c2)                 \
+     : "0"(c0), "1"(c1), "2"(c2), "g"(i), "g"(j)    \
+     : "%rax", "%rdx", "cc")
+
+#elif defined(CRY_ARCH_ARM)
+
+#define MULADD(c0, c1, c2, i, j) asm(               \
+    "umull  r0, r1, %6, %7  \n\t"                   \
+    "adds   %0, %0, r0      \n\t"                   \
+    "adcs   %1, %1, r1      \n\t"                   \
+    "adc    %2, %2, #0      \n\t"                   \
+    : "=r"(c0), "=r"(c1), "=r"(c2)                  \
+    : "0"(c0), "1"(c1), "2"(c2), "r"(i), "r"(j)     \
+    : "r0", "r1", "cc")
+
+#else /* ANSI C code */
+
+#define MULADD(c0, c1, c2, i, j) do { \
+   cry_mpi_dword _t; \
+   _t = (cry_mpi_dword)(c0) + ((cry_mpi_dword)(i)) * ((cry_mpi_dword)(j)); \
+   (c0) = (cry_mpi_digit) _t;                       \
+   _t = (cry_mpi_dword)(c1) + (_t >> CRY_MPI_DIGIT_BITS); \
+   (c1) = (cry_mpi_digit) _t;                       \
+   (c2) += (cry_mpi_digit) (_t >> CRY_MPI_DIGIT_BITS); \
+   } while (0);
+
+#endif
 
 #endif /* CRY_MPI_PVT_H_ */

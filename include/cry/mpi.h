@@ -159,6 +159,12 @@ int cry_mpi_mul_karatsuba(cry_mpi *r, const cry_mpi *a, const cry_mpi *b);
 
 int cry_mpi_mul_toom3(cry_mpi *r, const cry_mpi *a, const cry_mpi *b);
 
+int cry_mpi_sqr_baseline(cry_mpi *r, const cry_mpi *a);
+
+int cry_mpi_sqr_comba(cry_mpi *r, const cry_mpi *a);
+
+int cry_mpi_sqr_karatsuba(cry_mpi *r, const cry_mpi *a);
+
 /*
  * Utilities
  */

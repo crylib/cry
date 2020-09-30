@@ -267,6 +267,12 @@ static void mpi_dispatch(int argc, char *argv[])
         mpi_binary_mod_op(argc, argv, cry_mpi_mod_exp);
     else if (strcmp(test, "mpi_sqr") == 0)
         mpi_unary_op(argc, argv, cry_mpi_sqr);
+    else if (strcmp(test, "mpi_sqr_baseline") == 0)
+        mpi_unary_op(argc, argv, cry_mpi_sqr_baseline);
+    else if (strcmp(test, "mpi_sqr_comba") == 0)
+        mpi_unary_op(argc, argv, cry_mpi_sqr_comba);
+    else if (strcmp(test, "mpi_sqr_karatsuba") == 0)
+        mpi_unary_op(argc, argv, cry_mpi_sqr_karatsuba);
     else
         TRACE("Test '%s' not defined\n", test);
 

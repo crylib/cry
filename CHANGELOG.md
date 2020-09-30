@@ -22,6 +22,14 @@ Given a version number MAJOR.MINOR.PATCH
 * PATCH incremented for bug fixes
 
 
+[0.1.2] - Unreleased
+--------------------
+
+Added
+
+* MPI fast square using Comba and Karatsuba methods.
+
+
 [0.1.1] - 2020-04-01
 --------------------
 
