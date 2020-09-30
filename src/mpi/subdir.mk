@@ -19,6 +19,9 @@ objects-y := \
     mpi_div.o \
     mpi_div_abs.o \
     mpi_sqr.o \
+    mpi_sqr_baseline.o \
+    mpi_sqr_comba.o \
+    mpi_sqr_karatsuba.o \
     mpi_sqrt.o \
     mpi_shl.o \
     mpi_shr.o \

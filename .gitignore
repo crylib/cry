@@ -7,3 +7,5 @@ doc/doxy/html
 *.o
 *.gcda
 *.gcno
+
+.ccls-cache

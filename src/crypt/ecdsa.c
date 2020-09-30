@@ -4,6 +4,17 @@
 #define CHK0(exp) CRY_CHK(res = (exp), e0)
 #define CHK1(exp) CRY_CHK(res = (exp), e1)
 
+/* Used by GBCS Client Test Vector */
+#define NO_RAND_KEY1 \
+        "\x85\x65\x82\xad\xca\x80\xfe\x30\xa3\xa6\x5d\xb0\x75\x2c\x08\xd6" \
+        "\x73\xb7\x9f\x1a\x04\xfd\x8b\x64\x2a\x63\xe0\x10\xe6\x68\xb1\xef"
+/* Used by GBCS Server Test Vector */
+#define NO_RAND_KEY2 \
+        "\x9b\xe6\xd0\x64\x88\x74\x8d\x62\x99\x5e\x0d\xed\x41\x89\x82\x56" \
+        "\x62\x38\x90\x5d\xdc\xa2\xbc\x72\x1d\x44\x6e\xaa\x93\x2c\x07\x1b"
+/* Non random key for tests */
+#define NO_RAND_KEY NO_RAND_KEY2
+
 int cry_ecdsa_sign(cry_ecdsa_ctx *ctx, cry_ecdsa_sig *sig,
                    const unsigned char *in, size_t len)
 {
@@ -22,12 +33,7 @@ int cry_ecdsa_sign(cry_ecdsa_ctx *ctx, cry_ecdsa_sig *sig,
 
     /* This should be a random number between 0 and n-1 */
 #if 0
-    unsigned char K[] = {
-        0x9E, 0x56, 0xF5, 0x09, 0x19, 0x67, 0x84, 0xD9, 0x63, 0xD1, 0xC0,
-        0xA4, 0x01, 0x51, 0x0E, 0xE7, 0xAD, 0xA3, 0xDC, 0xC5, 0xDE, 0xE0,
-        0x4B, 0x15, 0x4B, 0xF6, 0x1A, 0xF1, 0xD5, 0xA6, 0xDE, 0xCE
-    };
-    CHK1(cry_mpi_load_bin(&k, K, sizeof(K)));
+    CHK1(cry_mpi_load_bin(&k, NO_RAND_KEY, sizeof(NO_RAND_KEY) - 1));
 #else
     CHK1(cry_mpi_rand_range(&k, &ctx->grp.n));
 #endif

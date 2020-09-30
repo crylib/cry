@@ -55,7 +55,7 @@ coverage: test
 	@mkdir -p out/coverage
 	@lcov -q -z -d ../build
 	@lcov -q -c -i -d ../build -o base.info
-	@./test $(TESTS)
+	@./test -v $(TESTS)
 	@lcov -q -c -d ../build -o cry.info
 	@lcov -q -a base.info -a cry.info -o cry.info
 	@genhtml -q -o out/coverage cry.info 
