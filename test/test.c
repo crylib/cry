@@ -1,3 +1,4 @@
+#include <cry/version.h>
 #include "test.h"
 #include "malloc_mock.h"
 
@@ -113,8 +114,7 @@ void func_test(const char *datafile, dispatch_func_t dispatch)
         if (*argbuf == '#' || *argbuf == '\0')
             continue;
         left = sizeof(argbuf);
-        if (g_verbose != 0)
-            TRACE("    %s\n", argbuf);
+        TRACE2("    %s\n", argbuf);
         /* Collect test function name and parameters */
         cnt = strlen(argbuf) + 1;
         curr = argbuf + cnt;
@@ -150,8 +150,7 @@ void run(const char *name, void (*test)(void),
     int fails;
 
     g_runs++;
-    if (g_verbose != 0)
-        TRACE("    %s\n", name);
+    TRACE2("    %s\n", name);
     if (setup != NULL)
         setup();
     fails = g_fails;
@@ -167,19 +166,16 @@ void malloc_fail_tests(struct malloc_fail_args *args, size_t num,
 {
     size_t i, fail_after;
 
-    if (g_verbose != 0)
-        TRACE("    Malloc fails\n");
+    TRACE2("    Malloc fails\n");
     for (i = 0; i < num; i++) {
-        if (g_verbose != 0)
-            TRACE("      %s \n", args[i].argv[0]);
+        TRACE2("      %s \n", args[i].argv[0]);
         fail_after = 0;
         do {
             g_malloc_mock_state = MALLOC_MOCK_READY;
             g_malloc_mock_count = fail_after++;
             dispatch(args[i].argc - 1, args[i].argv + 1);
         } while (g_malloc_mock_state == MALLOC_MOCK_FAILED);
-        if (g_verbose != 0)
-            TRACE("        fail-counter: %u\n", (unsigned)fail_after);
+        TRACE2("        fail-counter: %u\n", (unsigned)fail_after);
     }
     g_malloc_mock_state = MALLOC_MOCK_STOPPED;
 }
@@ -294,6 +290,28 @@ void cry_assert_fail(const char *cond, const char *file, int line)
     g_fails++;
 }
 
+void build_info(void)
+{
+    FILE *fp;
+    char *line = NULL;
+    size_t len = 0;
+    int read;
+
+    TRACE("Build information\n");
+    TRACE("  Version: %s\n", CRY_VERSION_STR);
+    fp = fopen("../include/cry/config.h", "r");
+    if (fp == NULL) {
+        TRACE("WARNING: config file not found\n");
+        return;
+    }
+    while ((read = getline(&line, &len, fp)) != -1) {
+        if (memcmp("#define", line, 7) == 0)
+            printf("  %s", line + 8);
+    }
+    fclose(fp);
+    TRACE("\n");
+}
+
 int main(int argc, char *argv[])
 {
     int i;
@@ -307,6 +325,7 @@ int main(int argc, char *argv[])
     parse_args(argc, argv);
 
     TRACE("\nC  R  Y  T  E  S  T\n\n");
+    build_info();
 
     for (i = 0; i < NTESTS; i++) {
         if (g_test_skip[i] == 0)
