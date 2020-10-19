@@ -151,7 +151,7 @@ vera:
 # Valgrind: memory leaks and dynamic issues report
 valgrind: test
 	@echo "Running valgrind ..."
-	@cd test; valgrind --xml=yes --xml-file=valgrind-report.xml --leak-check=full --show-leak-kinds=all --track-origins=yes ./test; cd ..
+	@cd test; valgrind --xml=yes --xml-file=valgrind-report.xml --leak-check=full --show-leak-kinds=all --track-origins=yes ./test -v; cd ..
 	@mv test/valgrind-report.xml build/valgrind-report.xml
 
 # Gcovr: coverage report using unit tests (uses valgrind run)
